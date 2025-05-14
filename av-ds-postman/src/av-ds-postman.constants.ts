@@ -1,0 +1,4 @@
+export const PROJECTNAME = 'ARMAXVIEW';
+export const MODULENAME = 'DATASCRAPPER';
+export const SUBAPPNAME = 'POSTMAN';
+export const APPNAME = `${PROJECTNAME}_${MODULENAME}_${SUBAPPNAME}`;
