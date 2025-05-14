@@ -1,0 +1,98 @@
+version: '3.8'
+networks:
+  edgebox:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+services:
+  av-ds-cron:
+    networks:
+      - edgebox
+    build:
+      context: ../
+      dockerfile: ./docker/dockerfile-cron
+      args:
+        - NPMTOKEN=${NPMTOKEN}
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '${AV_DS_CRON_PORT}:${AV_DS_CRON_PORT}'
+      - '${AV_DS_DEMOCRACY_PORT}:${AV_DS_DEMOCRACY_PORT}/udp'
+
+  av-ds-deviceprotocols:
+    build:
+      networks:
+        edgebox:
+          ipv4_address: 10.5.0.5
+      context: ../
+      dockerfile: ./docker/dockerfile-deviceprotocols
+      args:
+        - NPMTOKEN=${NPMTOKEN}
+    restart: always
+    volumes:
+      - ./cert:/opt/app/cert/:rw
+    env_file:
+      - .env
+    ports:
+      - '${AV_DS_DEVICEPROTOCOLS_PORT}:${AV_DS_DEVICEPROTOCOLS_PORT}'
+
+  av-ds-rawdata:
+    networks:
+      - edgebox
+    build:
+      context: ../
+      dockerfile: ./docker/dockerfile-rawdata
+      args:
+        - NPMTOKEN=${NPMTOKEN}
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '${AV_DS_RAWDATA_PORT}:${AV_DS_RAWDATA_PORT}'
+
+  av-ds-notificationengine:
+    networks:
+      - edgebox
+    build:
+      context: ../
+      dockerfile: ./docker/dockerfile-rawdata
+      args:
+        - NPMTOKEN=${NPMTOKEN}
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '${AV_DS_NOTIFICATIONENGINE_PORT}:${AV_DS_NOTIFICATIONENGINE_PORT}'
+
+  av-ds-postman:
+    networks:
+      - edgebox
+    build:
+      context: ../
+      dockerfile: ./docker/dockerfile-rawdata
+      args:
+        - NPMTOKEN=${NPMTOKEN}
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '${AV_DS_POSTMAN_PORT}:${AV_DS_POSTMAN_PORT}'
+  
+  av-ds-opcuaserver:
+    networks:
+      - edgebox
+    build:
+      context: ../
+      dockerfile: ./docker/dockerfile-rawdata
+      args:
+        - NPMTOKEN=${NPMTOKEN}
+    restart: always
+    ports:
+      - '${AV_DS_OPCUASERVER_PORT}:${AV_DS_OPCUASERVER_PORT}'
+    env_file:
+      - .env
+    volumes:
+      - ./certificates/:/opt/app/dist/apps/certificates/:rw

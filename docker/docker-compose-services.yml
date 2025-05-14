@@ -1,0 +1,68 @@
+version: '3.8'
+networks:
+  edgebox:
+    driver: bridge
+services:
+  # MONGO
+  mongo:
+    networks:
+      - edgebox
+    image: mongo:mongo:7.0
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: ${AV_DS_MONGODBPASSWORD}
+    ports:
+      - ${AV_DS_MONGODBPORT}:27017
+    volumes:
+      - mongodb_container_data:/data/db/
+    env_file:
+      - .env
+
+  # RABBITMQ
+  rabbitmq:
+    networks:
+      - edgebox
+    image: rabbitmq:3.8.7-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: always
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=${AV_DS_RABBITMQERLANGCOOKIE}
+      - RABBITMQ_DEFAULT_USER=${AV_DS_RABBITMQDEFAULTUSER}
+      - RABBITMQ_DEFAULT_PASS=${AV_DS_AV_DS_RABBITMQDEFAULTUSER}
+      - RABBITMQ_PLUGINS_DIR=${AV_DS_RABBITMQPLUGINSDIR}
+      - RABBITMQ_VHOST=/
+    volumes:
+      - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./rabbitmq/plugin:/rabbitmq/plugin/
+      - rabbitmq_container_data:/var/lib/rabbitmq/mnesia/
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    env_file:
+      - .env
+
+  # REDIS
+  redis:
+    image: bitnami/redis:7.2
+    volumes:
+      - redis_container_data:/bitnami/redis/data
+    networks:
+      - edgebox
+    ports:
+      - ${AV_DS_REDISPORT}:6379
+    restart: always
+    environment:
+      - REDIS_PASSWORD=${AV_DS_REDISPASSWORD}
+    env_file:
+      - .env
+
+volumes:
+  mongodb_container_data:
+  rabbitmq_container_data:
+  redis_container_data:

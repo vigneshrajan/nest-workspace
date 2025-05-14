@@ -1,0 +1,35 @@
+#  Template NodeJS build
+
+#  This template allows you to validate your NodeJS code.
+#  The workflow allows running tests and code linting on the default branch.
+
+image: node:20.8.0
+
+pipelines:
+  pull-requests:
+    "**":
+      - step:
+          name: Test, Lint and Code coverage
+          caches:
+            - node
+          script:
+            - npm run install:dev
+            - npm run lint
+            - npm run build
+  branches:
+    master:
+      - step:
+          name: Test and Code coverage
+          caches:
+            - node
+          script:
+            - npm run install:dev
+            - npm run lint
+            - npm run build
+      - step:
+          name: Publish Version Tag
+          caches:
+            - node
+          script:
+            - git tag -am "Tagging for release ${BITBUCKET_BUILD_NUMBER}" 1.${BITBUCKET_BUILD_NUMBER}.0
+            - git push origin 1.${BITBUCKET_BUILD_NUMBER}.0

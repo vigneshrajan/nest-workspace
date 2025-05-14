@@ -1,0 +1,5 @@
+#!/bin/bash
+cd ./../
+export DOCKER_CLI_EXPERIMENTAL=enabled
+docker buildx create --name av_${APPNAME}_${DOCKER_TAG} --use
+docker buildx build . -t ${IMAGE_NAME} -f ./docker/dockerfile-${APPNAME} --build-arg NPMTOKEN=${NPMTOKEN} --build-arg BUILDKIT_MULTI_PLATFORM=1 --platform linux/arm64,linux/amd64 --push

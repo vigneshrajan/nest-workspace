@@ -1,0 +1,87 @@
+{
+    "blockip": "192.168.0.118",
+    "logger": {
+        "debug": true,
+        "connectionstring": "file",
+        "type": 3
+    },
+    "database": {
+        "connectionstring": "mongodb://root:admin@localhost:27017?authSource=admin&appname=av-datascrapper"
+    },
+    "redis": {
+        "host": {
+            "host": "localhost",
+            "port": "6379"
+        },
+        "password": "Unwm85FpztxxYVmcPHtKy3uVDJcGUDrj",
+        "dbid": 1,
+        "sentinel": false
+    },
+    "kafka": {
+        "brokers": [
+            "127.0.0.1:9092"
+        ],
+        "isenabled": true
+    },
+    "rabbitmq": {
+        "connectionstring": "amqp://aapl:aapl@127.0.0.1:5672"
+    },
+    "dataprocessendpoint": {
+        "url": "http://localhost:8081",
+        "jwtsecret": "dasdasddasdasdwer"
+    },
+    "cron": {
+        "backlogdata": "*/30 * * * * *",
+        "backlognotificationdata": "*/30 * * * * *",
+        "backlogperseconddata": "*/30 * * * * *",
+        "datacleanup": "0 * * * *",
+        "perseconddataretentionindays": 1,
+        "ppcdatabatchpush": 10,
+        "rawdataaggregator": "* * * * *",
+        "rawdatarequest": "* * * * *",
+        "scadadatabatchpush": 50,
+        "scadadataretensionindays": 21
+    },
+    "killprocessonerror": true,
+    "port": 3001,
+    "applicationsecret": "CRe1Fyi54DCeec0ieXQ0xPaWn0SPQuY5",
+    "topics": {
+        "DATA_PROTOCOL_COLLECT_TOPIC": "DATA-PROTOCOL-COLLECT-TOPIC",
+        "DATA_RAW_COLLECT_TOPIC": "DATA-RAW-COLLECT-TOPIC",
+        "DATA_RAW_AGGREGATOR_TOPIC": "DATA-RAW-AGGREGATOR-TOPIC",
+        "DATA_RAW_SAMPLE_TOPIC": "DATA-RAW-SAMPLE-TOPIC",
+        "DATA_RAW_NOTIFICATION_TOPIC": "DATA-RAW-NOTIFICATION-TOPIC",
+        "DATA_BACKLOG_PERSECOND_TOPIC": "DATA-BACKLOG-PERSECOND-TOPIC",
+        "DATA_BACKLOG_PERMINUTE_TOPIC": "DATA-BACKLOG-PERMINUTE-TOPIC",
+        "DATA_BACKLOG_NOTIFICATION_ALERT_TOPIC": "DATA-BACKLOG-NOTIFICATION-ALERT-TOPIC",
+        "DATA_BACKLOG_NOTIFICATION_EVENT_TOPIC": "DATA-BACKLOG-NOTIFICATION-EVENT-TOPIC",
+        "DATA_CLEANUP_TOPIC": "DATA-CLEANUP-TOPIC",
+        "KILL_PROCESS_TOPIC": "KILL-PROCESS-TOPIC",
+        "DATA_RAW_LATEST_TOPIC": "DATA-RAW-LATEST-TOPIC"
+    },
+    "protocolinstances": 3,
+    "applicationports": {
+        "cronport": 3001,
+        "rawdataport": 3002,
+        "notificationengineport": 3003,
+        "postmanport": 3004,
+        "deviceprotocolsport": 3005,
+        "democracyport": 3006,
+        "opcuaserverport": 3007
+    },
+    "instanceid": 1,
+    "subdomain": "subdomain",
+    "internalservices": {
+        "opcuaserver": {
+            "enabled": true,
+            "serverport": 4840,
+            "allowanonymous": false,
+            "userlist": [
+                {
+                    "username": "username",
+                    "password": "password"
+                }
+            ]
+        }
+    }
+}

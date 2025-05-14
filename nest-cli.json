@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/av-ds-cron/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/av-ds-cron/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/av-ds-cron",
+  "projects": {
+    "av-ds-library": {
+      "type": "library",
+      "root": "libs/av-ds-library",
+      "entryFile": "index",
+      "sourceRoot": "libs/av-ds-library/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/av-ds-library/tsconfig.lib.json"
+      }
+    },
+    "av-ds-deviceprotocols": {
+      "type": "application",
+      "root": "apps/av-ds-deviceprotocols",
+      "entryFile": "main",
+      "sourceRoot": "apps/av-ds-deviceprotocols/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/av-ds-deviceprotocols/tsconfig.app.json"
+      }
+    },
+    "av-ds-cron": {
+      "type": "application",
+      "root": "apps/av-ds-cron",
+      "entryFile": "main",
+      "sourceRoot": "apps/av-ds-cron/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/av-ds-cron/tsconfig.app.json"
+      }
+    },
+    "av-ds-postman": {
+      "type": "application",
+      "root": "apps/av-ds-postman",
+      "entryFile": "main",
+      "sourceRoot": "apps/av-ds-postman/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/av-ds-postman/tsconfig.app.json"
+      }
+    },
+    "av-ds-rawdata": {
+      "type": "application",
+      "root": "apps/av-ds-rawdata",
+      "entryFile": "main",
+      "sourceRoot": "apps/av-ds-rawdata/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/av-ds-rawdata/tsconfig.app.json"
+      }
+    },
+    "av-ds-notificationengine": {
+      "type": "application",
+      "root": "apps/av-ds-notificationengine",
+      "entryFile": "main",
+      "sourceRoot": "apps/av-ds-notificationengine/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/av-ds-notificationengine/tsconfig.app.json"
+      }
+    },
+    "av-ds-opcuaserver": {
+      "type": "application",
+      "root": "apps/av-ds-opcuaserver",
+      "entryFile": "main",
+      "sourceRoot": "apps/av-ds-opcuaserver/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/av-ds-opcuaserver/tsconfig.app.json"
+      }
+    }
+  }
+}

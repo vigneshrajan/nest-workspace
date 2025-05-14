@@ -1,0 +1,168 @@
+version: '3.8'
+networks:
+  edgebox:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+services:
+  # RABBITMQ
+  rabbitmq:
+    networks:
+      - edgebox
+    image: rabbitmq:3.8.7-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: always
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=${AV_DS_RABBITMQERLANGCOOKIE}
+      - RABBITMQ_DEFAULT_USER=${AV_DS_RABBITMQDEFAULTUSER}
+      - RABBITMQ_DEFAULT_PASS=${AV_DS_AV_DS_RABBITMQDEFAULTUSER}
+      - RABBITMQ_PLUGINS_DIR=${AV_DS_RABBITMQPLUGINSDIR}
+      - RABBITMQ_VHOST=/
+    volumes:
+      - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - ./rabbitmq/plugin:/rabbitmq/plugin/
+      - av_ds_rabbitmq_data:/var/lib/rabbitmq/mnesia/
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    env_file:
+      - .env
+
+  av-ds-cron:
+    image: datawatt/av-ds-cron:latest
+    restart: always
+    networks:
+      - edgebox
+    ports:
+      - '${AV_DS_CRON_PORT}:${AV_DS_CRON_PORT}'
+      - '${AV_DS_DEMOCRACY_PORT}:${AV_DS_DEMOCRACY_PORT}/udp'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    environment:
+      - APP_NAME=AV_DS_CRON
+
+  av-ds-deviceprotocols-1:
+    image: datawatt/av-ds-deviceprotocols:latest
+    hostname: av-ds-deviceprotocols
+    restart: always
+    networks:
+      - edgebox
+    expose:
+      - ${AV_DS_DEVICEPROTOCOLS_PORT}1
+    volumes:
+      - ./cert/:/root/.config/node-opcua-default-nodejs/:rw
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    environment:
+      - instanceid=1
+      - APP_NAME=AV_DS_DEVICEPROTOCOLS_1
+    
+
+  av-ds-deviceprotocols-2:
+    image: datawatt/av-ds-deviceprotocols:latest
+    hostname: av-ds-deviceprotocols
+    restart: always
+    networks:
+      - edgebox
+    expose:
+      - ${AV_DS_DEVICEPROTOCOLS_PORT}2
+    volumes:
+      - ./cert/:/root/.config/node-opcua-default-nodejs/:rw
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    environment:
+      - instanceid=2
+      - APP_NAME=AV_DS_DEVICEPROTOCOLS_2
+
+
+  av-ds-deviceprotocols-3:
+    image: datawatt/av-ds-deviceprotocols:latest
+    hostname: av-ds-deviceprotocols
+    restart: always
+    networks:
+      - edgebox
+    expose:
+      - ${AV_DS_DEVICEPROTOCOLS_PORT}3
+    volumes:
+      - ./cert/:/root/.config/node-opcua-default-nodejs/:rw
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    environment:
+      - instanceid=3
+      - APP_NAME=AV_DS_DEVICEPROTOCOLS_3
+
+  av-ds-rawdata:
+    image: datawatt/av-ds-rawdata:latest
+    restart: always
+    networks:
+      - edgebox
+    ports:
+      - '${AV_DS_RAWDATA_PORT}:${AV_DS_RAWDATA_PORT}'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    environment:
+      - APP_NAME=AV_DS_RAWDATA
+
+  av-ds-notificationengine:
+    image: datawatt/av-ds-notificationengine:latest
+    restart: always
+    networks:
+      - edgebox
+    ports:
+      - '${AV_DS_NOTIFICATIONENGINE_PORT}:${AV_DS_NOTIFICATIONENGINE_PORT}'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    environment:
+      - APP_NAME=AV_DS_NOTIFICATIONENGINE
+
+  av-ds-postman:
+    image: datawatt/av-ds-postman:latest
+    restart: always
+    networks:
+      - edgebox
+    ports:
+      - '${AV_DS_POSTMAN_PORT}:${AV_DS_POSTMAN_PORT}'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    environment:
+      - APP_NAME=AV_DS_POSTMAN
+
+  av-ds-opcuaserver:
+    image: datawatt/av-ds-opcuaserver:latest
+    restart: always
+    networks:
+      - edgebox
+    ports:
+      - '${AV_DS_OPCUASERVER_PORT}:${AV_DS_OPCUASERVER_PORT}'
+      - '${AV_DS_OPCUASERVER_ENGINE_PORT}:${AV_DS_OPCUASERVER_ENGINE_PORT}'
+    env_file:
+      - .env
+    volumes:
+      - ./certificates/:/opt/app/dist/apps/av-ds-opcuaserver/certificates/:rw
+    depends_on:
+      - rabbitmq
+    environment:
+      - APP_NAME=AV_DS_OPCUASERVER
+volumes:
+  av_ds_rabbitmq_data:
